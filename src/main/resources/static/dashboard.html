@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - RideShare</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="bi bi-car-front-fill me-2"></i>RideShare
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="search.html">Search Rides</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav" id="authNav">
+                    <!-- Dynamic content based on auth status -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-5 pt-4">
+        <!-- Welcome Header -->
+        <div class="profile-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center">
+                        <div class="profile-avatar me-4">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <div>
+                            <h2 class="mb-1" id="welcomeMessage">Welcome back!</h2>
+                            <p class="mb-0 opacity-75">Ready for your next adventure?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <div class="d-flex gap-2 justify-content-md-end">
+                        <a href="search.html" class="btn btn-light">
+                            <i class="bi bi-search me-2"></i>Find Rides
+                        </a>
+                        <a href="publish-ride.html" class="btn btn-outline-light" id="publishRideBtn">
+                            <i class="bi bi-plus-circle me-2"></i>Publish Ride
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboardAlerts"></div>
+
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <i class="bi bi-car-front text-primary display-6 mb-2"></i>
+                    <div class="stat-number" id="totalRides">0</div>
+                    <div class="text-muted">Total Rides</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <i class="bi bi-calendar-check text-success display-6 mb-2"></i>
+                    <div class="stat-number" id="totalReservations">0</div>
+                    <div class="text-muted">Reservations</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <i class="bi bi-star-fill text-warning display-6 mb-2"></i>
+                    <div class="stat-number" id="userRating">0.0</div>
+                    <div class="text-muted">Your Rating</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <i class="bi bi-currency-dollar text-info display-6 mb-2"></i>
+                    <div class="stat-number">$<span id="totalSaved">0</span></div>
+                    <div class="text-muted">Money Saved</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row g-4 mb-5">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent border-0 py-3">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning-fill text-warning me-2"></i>Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <a href="search.html" class="btn btn-outline-primary w-100 py-3">
+                                    <i class="bi bi-search display-6 d-block mb-2"></i>
+                                    <strong>Search Rides</strong>
+                                    <div class="text-muted small">Find your next journey</div>
+                                </a>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <a href="reservations.html" class="btn btn-outline-success w-100 py-3">
+                                    <i class="bi bi-calendar-check display-6 d-block mb-2"></i>
+                                    <strong>My Reservations</strong>
+                                    <div class="text-muted small">View your bookings</div>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3 mt-2" id="driverActions" style="display: none;">
+                            <div class="col-md-6">
+                                <a href="publish-ride.html" class="btn btn-outline-info w-100 py-3">
+                                    <i class="bi bi-plus-circle display-6 d-block mb-2"></i>
+                                    <strong>Publish Ride</strong>
+                                    <div class="text-muted small">Offer a new ride</div>
+                                </a>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <a href="my-rides.html" class="btn btn-outline-warning w-100 py-3">
+                                    <i class="bi bi-car-front display-6 d-block mb-2"></i>
+                                    <strong>My Rides</strong>
+                                    <div class="text-muted small">Manage your rides</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent border-0 py-3">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bell-fill text-info me-2"></i>Recent Activity
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="recentActivity">
+                            <div class="text-center text-muted py-3">
+                                <i class="bi bi-inbox display-4 opacity-25"></i>
+                                <p class="mt-2 mb-0">No recent activity</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Rides/Reservations -->
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent border-0 py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="bi bi-clock-history text-secondary me-2"></i>Recent Rides
+                            </h5>
+                            <a href="search.html" class="btn btn-sm btn-outline-primary">View All</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="recentRides">
+                            <div class="text-center text-muted py-3">
+                                <i class="bi bi-car display-4 opacity-25"></i>
+                                <p class="mt-2 mb-0">No rides yet</p>
+                                <a href="search.html" class="btn btn-sm btn-primary mt-2">Find Rides</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent border-0 py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="bi bi-calendar-check text-success me-2"></i>Upcoming Trips
+                            </h5>
+                            <a href="reservations.html" class="btn btn-sm btn-outline-success">View All</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="upcomingTrips">
+                            <div class="text-center text-muted py-3">
+                                <i class="bi bi-calendar-plus display-4 opacity-25"></i>
+                                <p class="mt-2 mb-0">No upcoming trips</p>
+                                <a href="search.html" class="btn btn-sm btn-success mt-2">Book a Ride</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = authService.getCurrentUser();
+            if (user && user.role === 'DRIVER') {
+                document.getElementById('driverActions').style.display = 'block';
+                document.getElementById('publishRideBtn').style.display = 'inline-block';
+            }
+        });
+    </script>
+</body>
+</html>
