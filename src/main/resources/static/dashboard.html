@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - RideShare</title>
+    <title>Табло - СподеленоПътуване</title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -17,7 +17,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container">
             <a class="navbar-brand fw-bold" href="index.html">
-                <i class="bi bi-car-front-fill me-2"></i>RideShare
+                <i class="bi bi-car-front-fill me-2"></i>СподеленоПътуване
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -27,10 +27,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">Home</a>
+                        <a class="nav-link" href="index.html">Начало</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="search.html">Search Rides</a>
+                        <a class="nav-link" href="search.html">Търси Пътувания</a>
                     </li>
                 </ul>
                 
@@ -52,18 +52,18 @@
                             <i class="bi bi-person-fill"></i>
                         </div>
                         <div>
-                            <h2 class="mb-1" id="welcomeMessage">Welcome back!</h2>
-                            <p class="mb-0 opacity-75">Ready for your next adventure?</p>
+                            <h2 class="mb-1" id="welcomeMessage">Добре дошъл!</h2>
+                            <p class="mb-0 opacity-75">Готов за следващото приключение?</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 text-md-end mt-3 mt-md-0">
                     <div class="d-flex gap-2 justify-content-md-end">
                         <a href="search.html" class="btn btn-light">
-                            <i class="bi bi-search me-2"></i>Find Rides
+                            <i class="bi bi-search me-2"></i>Намери Пътувания
                         </a>
                         <a href="publish-ride.html" class="btn btn-outline-light" id="publishRideBtn">
-                            <i class="bi bi-plus-circle me-2"></i>Publish Ride
+                            <i class="bi bi-plus-circle me-2"></i>Публикувай Пътуване
                         </a>
                     </div>
                 </div>
@@ -74,37 +74,30 @@
 
         <!-- Stats Cards -->
         <div class="row g-4 mb-5">
-            <div class="col-md-3">
+            <div class="col-md-6" id="totalRidesCard">
                 <div class="stat-card">
                     <i class="bi bi-car-front text-primary display-6 mb-2"></i>
                     <div class="stat-number" id="totalRides">0</div>
-                    <div class="text-muted">Total Rides</div>
+                    <div class="text-muted">Общо Пътувания</div>
                 </div>
             </div>
             
-            <div class="col-md-3">
+            <div class="col-md-6" id="totalReservationsCard">
                 <div class="stat-card">
                     <i class="bi bi-calendar-check text-success display-6 mb-2"></i>
                     <div class="stat-number" id="totalReservations">0</div>
-                    <div class="text-muted">Reservations</div>
+                    <div class="text-muted">Резервации</div>
                 </div>
             </div>
             
-            <div class="col-md-3">
+            <div class="col-md-4" id="userRatingCard" style="display: none;">
                 <div class="stat-card">
                     <i class="bi bi-star-fill text-warning display-6 mb-2"></i>
                     <div class="stat-number" id="userRating">0.0</div>
-                    <div class="text-muted">Your Rating</div>
+                    <div class="text-muted">Твоята Оценка</div>
                 </div>
             </div>
             
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <i class="bi bi-currency-dollar text-info display-6 mb-2"></i>
-                    <div class="stat-number">$<span id="totalSaved">0</span></div>
-                    <div class="text-muted">Money Saved</div>
-                </div>
-            </div>
         </div>
 
         <!-- Quick Actions -->
@@ -113,7 +106,7 @@
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent border-0 py-3">
                         <h5 class="mb-0">
-                            <i class="bi bi-lightning-fill text-warning me-2"></i>Quick Actions
+                            <i class="bi bi-lightning-fill text-warning me-2"></i>Бързи Действия
                         </h5>
                     </div>
                     <div class="card-body">
@@ -121,16 +114,16 @@
                             <div class="col-md-6">
                                 <a href="search.html" class="btn btn-outline-primary w-100 py-3">
                                     <i class="bi bi-search display-6 d-block mb-2"></i>
-                                    <strong>Search Rides</strong>
-                                    <div class="text-muted small">Find your next journey</div>
+                                    <strong>Търси Пътувания</strong>
+                                    <div class="text-muted small">Намери следващото пътуване</div>
                                 </a>
                             </div>
                             
                             <div class="col-md-6">
                                 <a href="reservations.html" class="btn btn-outline-success w-100 py-3">
                                     <i class="bi bi-calendar-check display-6 d-block mb-2"></i>
-                                    <strong>My Reservations</strong>
-                                    <div class="text-muted small">View your bookings</div>
+                                    <strong>Моите Резервации</strong>
+                                    <div class="text-muted small">Прегледай резервациите си</div>
                                 </a>
                             </div>
                         </div>
@@ -139,16 +132,16 @@
                             <div class="col-md-6">
                                 <a href="publish-ride.html" class="btn btn-outline-info w-100 py-3">
                                     <i class="bi bi-plus-circle display-6 d-block mb-2"></i>
-                                    <strong>Publish Ride</strong>
-                                    <div class="text-muted small">Offer a new ride</div>
+                                    <strong>Публикувай Пътуване</strong>
+                                    <div class="text-muted small">Предложи ново пътуване</div>
                                 </a>
                             </div>
                             
                             <div class="col-md-6">
                                 <a href="my-rides.html" class="btn btn-outline-warning w-100 py-3">
                                     <i class="bi bi-car-front display-6 d-block mb-2"></i>
-                                    <strong>My Rides</strong>
-                                    <div class="text-muted small">Manage your rides</div>
+                                    <strong>Моите Пътувания</strong>
+                                    <div class="text-muted small">Управлявай пътуванията си</div>
                                 </a>
                             </div>
                         </div>
@@ -160,14 +153,14 @@
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent border-0 py-3">
                         <h5 class="mb-0">
-                            <i class="bi bi-bell-fill text-info me-2"></i>Recent Activity
+                            <i class="bi bi-bell-fill text-info me-2"></i>Последна Активност
                         </h5>
                     </div>
                     <div class="card-body">
                         <div id="recentActivity">
                             <div class="text-center text-muted py-3">
                                 <i class="bi bi-inbox display-4 opacity-25"></i>
-                                <p class="mt-2 mb-0">No recent activity</p>
+                                <p class="mt-2 mb-0">Няма последна активност</p>
                             </div>
                         </div>
                     </div>
@@ -182,17 +175,17 @@
                     <div class="card-header bg-transparent border-0 py-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">
-                                <i class="bi bi-clock-history text-secondary me-2"></i>Recent Rides
+                                <i class="bi bi-clock-history text-secondary me-2"></i>Последни Пътувания
                             </h5>
-                            <a href="search.html" class="btn btn-sm btn-outline-primary">View All</a>
+                            <a href="search.html" class="btn btn-sm btn-outline-primary">Покажи Всички</a>
                         </div>
                     </div>
                     <div class="card-body">
                         <div id="recentRides">
                             <div class="text-center text-muted py-3">
                                 <i class="bi bi-car display-4 opacity-25"></i>
-                                <p class="mt-2 mb-0">No rides yet</p>
-                                <a href="search.html" class="btn btn-sm btn-primary mt-2">Find Rides</a>
+                                <p class="mt-2 mb-0">Още няма пътувания</p>
+                                <a href="search.html" class="btn btn-sm btn-primary mt-2">Намери Пътувания</a>
                             </div>
                         </div>
                     </div>
@@ -204,17 +197,17 @@
                     <div class="card-header bg-transparent border-0 py-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">
-                                <i class="bi bi-calendar-check text-success me-2"></i>Upcoming Trips
+                                <i class="bi bi-calendar-check text-success me-2"></i>Предстоящи Пътувания
                             </h5>
-                            <a href="reservations.html" class="btn btn-sm btn-outline-success">View All</a>
+                            <a href="reservations.html" class="btn btn-sm btn-outline-success">Покажи Всички</a>
                         </div>
                     </div>
                     <div class="card-body">
                         <div id="upcomingTrips">
                             <div class="text-center text-muted py-3">
                                 <i class="bi bi-calendar-plus display-4 opacity-25"></i>
-                                <p class="mt-2 mb-0">No upcoming trips</p>
-                                <a href="search.html" class="btn btn-sm btn-success mt-2">Book a Ride</a>
+                                <p class="mt-2 mb-0">Няма предстоящи пътувания</p>
+                                <a href="search.html" class="btn btn-sm btn-success mt-2">Резервирай Пътуване</a>
                             </div>
                         </div>
                     </div>

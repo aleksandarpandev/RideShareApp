@@ -46,6 +46,18 @@ public class Reservation {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
+    // JPA lifecycle methods
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+    
     // Constructors
     public Reservation() {}
     

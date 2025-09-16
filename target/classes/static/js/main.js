@@ -129,7 +129,7 @@ async function loadSearchResults() {
         
     } catch (error) {
         console.error('Search error:', error);
-        showAlert('Failed to load search results. Please try again.', 'danger', 'searchAlerts');
+        showAlert('Неуспешно зареждане на резултати от търсенето. Моля, опитайте отново.', 'danger', 'searchAlerts');
     } finally {
         if (loadingDiv) loadingDiv.style.display = 'none';
     }
@@ -143,8 +143,8 @@ function displaySearchResults(rides) {
         resultsContainer.innerHTML = `
             <div class="no-results">
                 <i class="bi bi-search"></i>
-                <h4>No rides found</h4>
-                <p>Try adjusting your search criteria or check back later for new rides.</p>
+                <h4>Няма намерени пътувания</h4>
+                <p>Опитайте да промените критериите за търсене или проверете по-късно за нови пътувания.</p>
             </div>
         `;
         return;
@@ -182,12 +182,12 @@ function displaySearchResults(rides) {
                     <div class="col-md-6 text-md-end">
                         <div class="mb-2">
                             <span class="badge bg-success me-2">
-                                <i class="bi bi-people-fill me-1"></i>${ride.availableSeats} seats
+                                <i class="bi bi-people-fill me-1"></i>${ride.availableSeats} места
                             </span>
                             <span class="h4 text-primary mb-0">$${ride.price}</span>
                         </div>
                         <button class="btn btn-primary" onclick="viewRideDetails(${ride.id})">
-                            View Details
+                            Подробности
                         </button>
                     </div>
                 </div>
@@ -196,9 +196,9 @@ function displaySearchResults(rides) {
     `).join('');
 }
 
-// View ride details
+// View ride details - redirect to search page with ride details
 function viewRideDetails(rideId) {
-    window.location.href = `ride-details.html?id=${rideId}`;
+    window.location.href = `search.html?rideId=${rideId}`;
 }
 
 // Handle login
@@ -212,13 +212,13 @@ async function handleLogin(event) {
     
     try {
         await authService.login(email, password);
-        showAlert('Login successful! Redirecting...', 'success');
+        showAlert('Успешен вход! Пренасочване...', 'success');
         setTimeout(() => {
             window.location.href = 'dashboard.html';
         }, 1500);
     } catch (error) {
-        showAlert(error.message || 'Login failed. Please try again.');
-        hideLoading('loginBtn', 'Sign In');
+        showAlert(error.message || 'Неуспешен вход. Моля, опитайте отново.');
+        hideLoading('loginBtn', 'Влез');
     }
 }
 
@@ -237,7 +237,7 @@ async function handleRegister(event) {
     // Validate password confirmation
     const confirmPassword = formData.get('confirmPassword');
     if (userData.password !== confirmPassword) {
-        showAlert('Passwords do not match.');
+        showAlert('Паролите не съвпадат.');
         return;
     }
     
@@ -245,13 +245,13 @@ async function handleRegister(event) {
     
     try {
         await authService.register(userData);
-        showAlert('Registration successful! Redirecting...', 'success');
+        showAlert('Успешна регистрация! Пренасочване...', 'success');
         setTimeout(() => {
             window.location.href = 'dashboard.html';
         }, 1500);
     } catch (error) {
-        showAlert(error.message || 'Registration failed. Please try again.');
-        hideLoading('registerBtn', 'Create Account');
+        showAlert(error.message || 'Неуспешна регистрация. Моля, опитайте отново.');
+        hideLoading('registerBtn', 'Създай Профил');
     }
 }
 
@@ -285,14 +285,14 @@ async function handlePublishRide(event) {
         }
         
         const ride = await response.json();
-        showAlert('Ride published successfully!', 'success');
+        showAlert('Пътуването е публикувано успешно!', 'success');
         setTimeout(() => {
-            window.location.href = 'my-rides.html';
+            window.location.href = 'index.html';
         }, 1500);
     } catch (error) {
         console.error('Publish ride error:', error);
-        showAlert(error.message || 'Failed to publish ride. Please try again.');
-        hideLoading('publishBtn', 'Publish Ride');
+        showAlert(error.message || 'Неуспешно публикуване на пътуване. Моля, опитайте отново.');
+        hideLoading('publishBtn', 'Публикувай Пътуване');
     }
 }
 
@@ -312,7 +312,7 @@ async function loadDashboard() {
         }
     } catch (error) {
         console.error('Dashboard error:', error);
-        showAlert('Failed to load dashboard data.', 'warning', 'dashboardAlerts');
+        showAlert('Неуспешно зареждане на данни за таблото.', 'warning', 'dashboardAlerts');
     }
 }
 
@@ -322,10 +322,43 @@ function displayDashboardStats(rides, reservations) {
     // Update welcome message
     const welcomeMsg = document.getElementById('welcomeMessage');
     if (welcomeMsg) {
-        welcomeMsg.textContent = `Welcome back, ${user.name}!`;
+        welcomeMsg.textContent = `Добре се върна, ${user.name}!`;
     }
     
-    // Update stats
+    // Show/hide stats based on user role
+    const totalRidesCard = document.getElementById('totalRidesCard');
+    const totalReservationsCard = document.getElementById('totalReservationsCard');
+    const userRatingCard = document.getElementById('userRatingCard');
+    
+    if (user.role === 'DRIVER') {
+        // Driver: Show rides, reservations and rating (3 columns each)
+        if (totalRidesCard) {
+            totalRidesCard.className = 'col-md-4';
+            totalRidesCard.style.display = 'block';
+        }
+        if (totalReservationsCard) {
+            totalReservationsCard.className = 'col-md-4';
+            totalReservationsCard.style.display = 'block';
+        }
+        if (userRatingCard) {
+            userRatingCard.className = 'col-md-4';
+            userRatingCard.style.display = 'block';
+        }
+    } else {
+        // User: Show only reservations (hide rides and rating)
+        if (totalRidesCard) {
+            totalRidesCard.style.display = 'none';
+        }
+        if (totalReservationsCard) {
+            totalReservationsCard.className = 'col-md-12';
+            totalReservationsCard.style.display = 'block';
+        }
+        if (userRatingCard) {
+            userRatingCard.style.display = 'none';
+        }
+    }
+    
+    // Update stats values
     const totalRides = document.getElementById('totalRides');
     const totalReservations = document.getElementById('totalReservations');
     const userRating = document.getElementById('userRating');
@@ -340,7 +373,7 @@ async function loadReservations() {
     const container = document.getElementById('reservationsContainer');
     if (!container) return;
     
-    container.innerHTML = '<div class="loading">Loading reservations...</div>';
+    container.innerHTML = '<div class="loading">Зареждане на резервации...</div>';
     
     try {
         const response = await authService.apiRequest('/reservations/my-reservations');
@@ -350,7 +383,7 @@ async function loadReservations() {
         displayReservations(reservations);
     } catch (error) {
         console.error('Reservations error:', error);
-        container.innerHTML = '<div class="alert alert-danger">Failed to load reservations.</div>';
+        container.innerHTML = '<div class="alert alert-danger">Неуспешно зареждане на резервации.</div>';
     }
 }
 
@@ -362,9 +395,9 @@ function displayReservations(reservations) {
         container.innerHTML = `
             <div class="text-center py-5">
                 <i class="bi bi-calendar-x display-1 text-muted"></i>
-                <h4 class="mt-3">No reservations yet</h4>
-                <p class="text-muted">Start by searching for rides!</p>
-                <a href="search.html" class="btn btn-primary">Search Rides</a>
+                <h4 class="mt-3">Още няма резервации</h4>
+                <p class="text-muted">Започнете с търсене на пътувания!</p>
+                <a href="search.html" class="btn btn-primary">Търси Пътувания</a>
             </div>
         `;
         return;
@@ -380,10 +413,10 @@ function displayReservations(reservations) {
                             <i class="bi bi-calendar me-2"></i>${formatDateTime(reservation.ride.dateTime)}
                         </p>
                         <p class="text-muted mb-1">
-                            <i class="bi bi-person me-2"></i>Driver: ${reservation.ride.driver.name}
+                            <i class="bi bi-person me-2"></i>Шофьор: ${reservation.ride.driver.name}
                         </p>
                         <p class="text-muted mb-0">
-                            <i class="bi bi-people me-2"></i>Seats reserved: ${reservation.seatsReserved}
+                            <i class="bi bi-people me-2"></i>Резервирани места: ${reservation.seatsReserved}
                         </p>
                     </div>
                     <div class="col-md-4 text-md-end">
@@ -394,7 +427,12 @@ function displayReservations(reservations) {
                         <span class="h5">$${reservation.ride.price * reservation.seatsReserved}</span>
                         ${reservation.status === 'CONFIRMED' && new Date(reservation.ride.dateTime) > new Date() ? `
                             <br><button class="btn btn-sm btn-outline-danger mt-2" onclick="cancelReservation(${reservation.id})">
-                                Cancel
+                                Отказ
+                            </button>
+                        ` : ''}
+                        ${reservation.status === 'CONFIRMED' ? `
+                            <br><button class="btn btn-sm btn-warning mt-2" onclick="showReviewModal(${reservation.ride.id}, ${reservation.ride.driver.id}, '${reservation.ride.driver.name}', '${reservation.ride.origin}', '${reservation.ride.destination}', '${reservation.ride.dateTime}')">
+                                <i class="bi bi-star me-1"></i>Оцени Шофьора
                             </button>
                         ` : ''}
                     </div>
@@ -413,9 +451,112 @@ function getStatusColor(status) {
     }
 }
 
+// Load my rides
+async function loadMyRides() {
+    const container = document.getElementById('myRidesContainer');
+    if (!container) return;
+    
+    container.innerHTML = '<div class="loading">Зареждане на пътувания...</div>';
+    
+    try {
+        const response = await authService.apiRequest('/rides/driver/my-rides');
+        if (!response.ok) throw new Error('Failed to load my rides');
+        
+        const rides = await response.json();
+        displayMyRides(rides);
+    } catch (error) {
+        console.error('My rides error:', error);
+        container.innerHTML = '<div class="alert alert-danger">Неуспешно зареждане на пътувания.</div>';
+    }
+}
+
+function displayMyRides(rides) {
+    const container = document.getElementById('myRidesContainer');
+    if (!container) return;
+    
+    if (rides.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-5">
+                <i class="bi bi-car-front display-1 text-muted"></i>
+                <h4 class="mt-3">Още няма публикувани пътувания</h4>
+                <p class="text-muted">Започнете с публикуване на вашето първо пътуване!</p>
+                <a href="publish-ride.html" class="btn btn-primary">Публикувай Пътуване</a>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = rides.map(ride => `
+        <div class="card ride-card mb-3">
+            <div class="ride-header">
+                <div class="route-info">
+                    <h5 class="mb-0">${ride.origin}</h5>
+                    <i class="bi bi-arrow-right route-arrow"></i>
+                    <h5 class="mb-0">${ride.destination}</h5>
+                </div>
+                <small class="text-light">
+                    <i class="bi bi-calendar me-1"></i>${formatDateTime(ride.dateTime)}
+                </small>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        ${ride.description ? `<p class="text-muted mb-2">${ride.description}</p>` : ''}
+                        <div class="d-flex gap-3 mb-2">
+                            <span class="badge bg-success">
+                                <i class="bi bi-people-fill me-1"></i>${ride.availableSeats} места
+                            </span>
+                            <span class="badge bg-info">
+                                <i class="bi bi-currency-dollar me-1"></i>$${ride.price}
+                            </span>
+                            <span class="badge bg-${getStatusColor(ride.status)}">
+                                ${ride.status}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <div class="btn-group" role="group">
+                            <button class="btn btn-outline-primary btn-sm" onclick="editRide(${ride.id})">
+                                <i class="bi bi-pencil"></i> Редактирай
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm" onclick="cancelRide(${ride.id})">
+                                <i class="bi bi-x-circle"></i> Отказ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Edit ride (placeholder)
+function editRide(rideId) {
+    showAlert('Редактирането на пътувания ще бъде добавено скоро.', 'info', 'myRidesAlerts');
+}
+
+// Cancel ride
+async function cancelRide(rideId) {
+    if (!confirm('Сигурни ли сте, че искате да отмените това пътуване?')) return;
+    
+    try {
+        const response = await authService.apiRequest(`/rides/${rideId}/status?status=CANCELLED`, {
+            method: 'PUT'
+        });
+        
+        if (!response.ok) throw new Error('Failed to cancel ride');
+        
+        showAlert('Пътуването е отменено успешно.', 'success', 'myRidesAlerts');
+        setTimeout(() => loadMyRides(), 1000);
+    } catch (error) {
+        console.error('Cancel ride error:', error);
+        showAlert('Неуспешно отменяне на пътуване.', 'danger', 'myRidesAlerts');
+    }
+}
+
 // Cancel reservation
 async function cancelReservation(reservationId) {
-    if (!confirm('Are you sure you want to cancel this reservation?')) return;
+    if (!confirm('Сигурни ли сте, че искате да откажете тази резервация?')) return;
     
     try {
         const response = await authService.apiRequest(`/reservations/${reservationId}/cancel`, {
@@ -424,11 +565,11 @@ async function cancelReservation(reservationId) {
         
         if (!response.ok) throw new Error('Failed to cancel reservation');
         
-        showAlert('Reservation cancelled successfully.', 'success', 'reservationAlerts');
+        showAlert('Резервацията е отказана успешно.', 'success', 'reservationAlerts');
         setTimeout(() => loadReservations(), 1000);
     } catch (error) {
         console.error('Cancel reservation error:', error);
-        showAlert('Failed to cancel reservation.', 'danger', 'reservationAlerts');
+        showAlert('Неуспешно отказване на резервация.', 'danger', 'reservationAlerts');
     }
 }
 
@@ -442,7 +583,7 @@ async function loadProfile() {
         displayProfile(user);
     } catch (error) {
         console.error('Profile error:', error);
-        showAlert('Failed to load profile.', 'danger', 'profileAlerts');
+        showAlert('Неуспешно зареждане на профил.', 'danger', 'profileAlerts');
     }
 }
 
@@ -469,6 +610,125 @@ function displayProfile(user) {
     if (profileRating) profileRating.innerHTML = generateStars(user.rating || 0);
 }
 
+// Show review modal
+function showReviewModal(rideId, driverId, driverName, origin, destination, dateTime) {
+    // Set hidden fields
+    document.getElementById('reviewRideId').value = rideId;
+    document.getElementById('reviewDriverId').value = driverId;
+    
+    // Set ride info
+    document.getElementById('reviewRideInfo').innerHTML = `
+        <strong>${origin} → ${destination}</strong><br>
+        Шофьор: ${driverName}<br>
+        Дата: ${formatDateTime(dateTime)}
+    `;
+    
+    // Reset form
+    document.getElementById('reviewForm').reset();
+    document.getElementById('rating').value = '';
+    document.getElementById('ratingText').textContent = 'Изберете оценка';
+    document.querySelectorAll('.star-input').forEach(star => {
+        star.classList.remove('bi-star-fill');
+        star.classList.add('bi-star');
+    });
+    
+    // Show modal
+    new bootstrap.Modal(document.getElementById('reviewModal')).show();
+}
+
+// Handle star rating
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('.star-input');
+    const ratingInput = document.getElementById('rating');
+    const ratingText = document.getElementById('ratingText');
+    
+    if (stars.length > 0) {
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const rating = parseInt(this.dataset.rating);
+                ratingInput.value = rating;
+                
+                // Update star display
+                stars.forEach((s, index) => {
+                    if (index < rating) {
+                        s.classList.remove('bi-star');
+                        s.classList.add('bi-star-fill');
+                    } else {
+                        s.classList.remove('bi-star-fill');
+                        s.classList.add('bi-star');
+                    }
+                });
+                
+                // Update text
+                const ratingTexts = ['', 'Много лошо', 'Лошо', 'Средно', 'Добре', 'Отлично'];
+                ratingText.textContent = ratingTexts[rating];
+            });
+            
+            star.addEventListener('mouseenter', function() {
+                const rating = parseInt(this.dataset.rating);
+                stars.forEach((s, index) => {
+                    if (index < rating) {
+                        s.style.color = '#ffc107';
+                    } else {
+                        s.style.color = '';
+                    }
+                });
+            });
+        });
+        
+        document.querySelector('.star-rating').addEventListener('mouseleave', function() {
+            stars.forEach(s => s.style.color = '');
+        });
+    }
+    
+    // Handle review form submission
+    const reviewForm = document.getElementById('reviewForm');
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', handleReviewSubmit);
+    }
+});
+
+// Handle review submission
+async function handleReviewSubmit(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const reviewData = {
+        rideId: parseInt(formData.get('rideId')),
+        rating: parseInt(formData.get('rating')),
+        comment: formData.get('comment')
+    };
+    
+    if (!reviewData.rating) {
+        showAlert('Моля, изберете оценка.', 'danger', 'reviewAlerts');
+        return;
+    }
+    
+    showLoading('submitReviewBtn');
+    
+    try {
+        const response = await authService.apiRequest('/reviews', {
+            method: 'POST',
+            body: JSON.stringify(reviewData)
+        });
+        
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(error);
+        }
+        
+        showAlert('Оценката е изпратена успешно!', 'success', 'reviewAlerts');
+        setTimeout(() => {
+            bootstrap.Modal.getInstance(document.getElementById('reviewModal')).hide();
+            loadReservations();
+        }, 1500);
+    } catch (error) {
+        console.error('Review submit error:', error);
+        showAlert(error.message || 'Неуспешно изпращане на оценка.', 'danger', 'reviewAlerts');
+        hideLoading('submitReviewBtn', 'Изпрати Оценка');
+    }
+}
+
 // Book a ride
 async function bookRide(rideId, seats = 1) {
     if (!authService.requireAuth()) return;
@@ -487,12 +747,12 @@ async function bookRide(rideId, seats = 1) {
             throw new Error(error);
         }
         
-        showAlert('Ride booked successfully!', 'success');
+        showAlert('Пътуването е резервирано успешно!', 'success');
         setTimeout(() => {
-            window.location.href = 'reservations.html';
+            window.location.href = 'index.html';
         }, 1500);
     } catch (error) {
         console.error('Booking error:', error);
-        showAlert(error.message || 'Failed to book ride.');
+        showAlert(error.message || 'Неуспешно резервиране на пътуване.');
     }
 }

@@ -10,6 +10,7 @@ import com.carpool.repository.RideRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -158,6 +159,7 @@ public class RideService {
     /**
      * Reduce available seats when booking
      */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void reduceAvailableSeats(Long rideId, Integer seatsToReduce) {
         Ride ride = rideRepository.findById(rideId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ride not found with id: " + rideId));
@@ -173,6 +175,7 @@ public class RideService {
     /**
      * Increase available seats when cancelling reservation
      */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void increaseAvailableSeats(Long rideId, Integer seatsToAdd) {
         Ride ride = rideRepository.findById(rideId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ride not found with id: " + rideId));

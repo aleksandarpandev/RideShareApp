@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моите Резервации - Споделено Пътуване</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">
+                <i class="bi bi-car-front-fill me-2"></i>Споделено Пътуване
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Начало</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="search.html">Търси Пътувания</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav" id="authNav">
+                    <!-- Dynamic content based on auth status -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-5 pt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="display-6 mb-2">
+                            <i class="bi bi-calendar-check me-3 text-success"></i>Моите Резервации
+                        </h1>
+                        <p class="text-muted mb-0">Управлявайте вашите резервирани пътувания</p>
+                    </div>
+                    <div>
+                        <a href="search.html" class="btn btn-primary">
+                            <i class="bi bi-search me-2"></i>Търси Нови Пътувания
+                        </a>
+                    </div>
+                </div>
+
+                <div id="reservationAlerts"></div>
+
+                <!-- Reservations Container -->
+                <div id="reservationsContainer">
+                    <div class="d-flex justify-content-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Зареждане...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div class="modal fade" id="reviewModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-star me-2"></i>Оценете Шофьора
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="reviewAlerts"></div>
+                    
+                    <form id="reviewForm">
+                        <input type="hidden" id="reviewRideId" name="rideId">
+                        <input type="hidden" id="reviewDriverId" name="driverId">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Информация за пътуването:</label>
+                            <div class="card bg-light">
+                                <div class="card-body py-2">
+                                    <div id="reviewRideInfo" class="small text-muted">
+                                        <!-- Ride info will be populated here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="rating" class="form-label">Оценка *</label>
+                            <div class="rating-input">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <div class="star-rating">
+                                        <i class="bi bi-star star-input" data-rating="1"></i>
+                                        <i class="bi bi-star star-input" data-rating="2"></i>
+                                        <i class="bi bi-star star-input" data-rating="3"></i>
+                                        <i class="bi bi-star star-input" data-rating="4"></i>
+                                        <i class="bi bi-star star-input" data-rating="5"></i>
+                                    </div>
+                                    <span id="ratingText" class="text-muted small">Изберете оценка</span>
+                                </div>
+                                <input type="hidden" id="rating" name="rating" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="comment" class="form-label">Коментар (По желание)</label>
+                            <textarea class="form-control" id="comment" name="comment" rows="4" 
+                                      placeholder="Споделете вашето мнение за пътуването и шофьора..."></textarea>
+                            <div class="form-text">Максимум 1000 символа</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отказ</button>
+                    <button type="submit" form="reviewForm" id="submitReviewBtn" class="btn btn-primary">
+                        <i class="bi bi-check-circle me-2"></i>Изпрати Оценка
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -2,6 +2,8 @@ package com.carpool.service;
 
 import com.carpool.dto.ReservationCreateDto;
 import com.carpool.dto.ReservationResponseDto;
+import com.carpool.dto.RideResponseDto;
+import com.carpool.dto.UserResponseDto;
 import com.carpool.entity.Reservation;
 import com.carpool.entity.Ride;
 import com.carpool.entity.User;
@@ -11,6 +13,7 @@ import com.carpool.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,6 +40,7 @@ public class ReservationService {
     /**
      * Create a new reservation
      */
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public ReservationResponseDto createReservation(ReservationCreateDto reservationDto, Long userId) {
         User user = userService.findById(userId);
         Ride ride = rideService.findById(reservationDto.getRideId());
@@ -50,7 +54,10 @@ public class ReservationService {
             throw new BusinessException("You have already reserved seats for this ride");
         }
         
-        // Create reservation
+        // First update available seats in ride
+        rideService.reduceAvailableSeats(ride.getId(), reservationDto.getSeatsReserved());
+        
+        // Then create reservation
         Reservation reservation = new Reservation();
         reservation.setRide(ride);
         reservation.setUser(user);
@@ -60,10 +67,8 @@ public class ReservationService {
         
         Reservation savedReservation = reservationRepository.save(reservation);
         
-        // Update available seats in ride
-        rideService.reduceAvailableSeats(ride.getId(), reservationDto.getSeatsReserved());
-        
-        return new ReservationResponseDto(savedReservation);
+        // Create response DTO manually to avoid lazy loading issues
+        return createReservationResponseDto(savedReservation);
     }
     
     /**
@@ -75,7 +80,7 @@ public class ReservationService {
         List<Reservation> reservations = reservationRepository.findByUserOrderByCreatedAtDesc(user);
         
         return reservations.stream()
-                .map(ReservationResponseDto::new)
+                .map(this::createReservationResponseDto)
                 .collect(Collectors.toList());
     }
     
@@ -89,7 +94,7 @@ public class ReservationService {
         List<Reservation> reservations = reservationRepository.findUpcomingReservationsByUser(user, currentTime);
         
         return reservations.stream()
-                .map(ReservationResponseDto::new)
+                .map(this::createReservationResponseDto)
                 .collect(Collectors.toList());
     }
     
@@ -103,7 +108,7 @@ public class ReservationService {
         List<Reservation> reservations = reservationRepository.findPastReservationsByUser(user, currentTime);
         
         return reservations.stream()
-                .map(ReservationResponseDto::new)
+                .map(this::createReservationResponseDto)
                 .collect(Collectors.toList());
     }
     
@@ -116,13 +121,14 @@ public class ReservationService {
         List<Reservation> reservations = reservationRepository.findByRideOrderByCreatedAtAsc(ride);
         
         return reservations.stream()
-                .map(ReservationResponseDto::new)
+                .map(this::createReservationResponseDto)
                 .collect(Collectors.toList());
     }
     
     /**
      * Cancel a reservation
      */
+    @Transactional
     public ReservationResponseDto cancelReservation(Long reservationId, Long userId) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Reservation not found with id: " + reservationId));
@@ -149,7 +155,7 @@ public class ReservationService {
         // Restore available seats in ride
         rideService.increaseAvailableSeats(reservation.getRide().getId(), reservation.getSeatsReserved());
         
-        return new ReservationResponseDto(savedReservation);
+        return createReservationResponseDto(savedReservation);
     }
     
     /**
@@ -160,7 +166,59 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Reservation not found with id: " + reservationId));
         
-        return new ReservationResponseDto(reservation);
+        return createReservationResponseDto(reservation);
+    }
+    
+    /**
+     * Create ReservationResponseDto manually to avoid lazy loading issues
+     */
+    private ReservationResponseDto createReservationResponseDto(Reservation reservation) {
+        ReservationResponseDto dto = new ReservationResponseDto();
+        dto.setId(reservation.getId());
+        dto.setSeatsReserved(reservation.getSeatsReserved());
+        dto.setStatus(reservation.getStatus());
+        dto.setNotes(reservation.getNotes());
+        dto.setCreatedAt(reservation.getCreatedAt());
+        
+        // Create UserResponseDto manually
+        User user = reservation.getUser();
+        UserResponseDto userDto = new UserResponseDto();
+        userDto.setId(user.getId());
+        userDto.setName(user.getName());
+        userDto.setEmail(user.getEmail());
+        userDto.setRole(user.getRole());
+        userDto.setRating(user.getRating());
+        userDto.setTotalReviews(user.getTotalReviews());
+        dto.setUser(userDto);
+        
+        // Create RideResponseDto manually
+        Ride ride = reservation.getRide();
+        RideResponseDto rideDto = new RideResponseDto();
+        rideDto.setId(ride.getId());
+        rideDto.setOrigin(ride.getOrigin());
+        rideDto.setDestination(ride.getDestination());
+        rideDto.setDateTime(ride.getDateTime());
+        rideDto.setPrice(ride.getPrice());
+        rideDto.setAvailableSeats(ride.getAvailableSeats());
+        rideDto.setTotalSeats(ride.getTotalSeats());
+        rideDto.setDescription(ride.getDescription());
+        rideDto.setStatus(ride.getStatus());
+        rideDto.setCreatedAt(ride.getCreatedAt());
+        
+        // Create driver UserResponseDto manually
+        User driver = ride.getDriver();
+        UserResponseDto driverDto = new UserResponseDto();
+        driverDto.setId(driver.getId());
+        driverDto.setName(driver.getName());
+        driverDto.setEmail(driver.getEmail());
+        driverDto.setRole(driver.getRole());
+        driverDto.setRating(driver.getRating());
+        driverDto.setTotalReviews(driver.getTotalReviews());
+        rideDto.setDriver(driverDto);
+        
+        dto.setRide(rideDto);
+        
+        return dto;
     }
     
     /**

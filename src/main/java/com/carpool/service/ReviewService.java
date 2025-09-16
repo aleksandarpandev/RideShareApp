@@ -180,12 +180,7 @@ public class ReviewService {
             throw new BusinessException("Drivers cannot review their own rides");
         }
         
-        // Check if reviewer had a confirmed reservation for this ride
-        Optional<Reservation> reservation = reservationRepository.findByRideAndUserAndStatus(
-                ride, reviewer, Reservation.ReservationStatus.CONFIRMED);
-        if (reservation.isEmpty()) {
-            throw new BusinessException("You can only review rides you have taken");
-        }
+        // Allow any user to review any completed ride (no reservation required)
     }
     
     /**

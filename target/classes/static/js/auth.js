@@ -133,25 +133,25 @@ class AuthService {
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="dashboard.html">
-                            <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                            <i class="bi bi-speedometer2 me-2"></i>Табло
                         </a></li>
                         <li><a class="dropdown-item" href="profile.html">
-                            <i class="bi bi-person me-2"></i>Profile
+                            <i class="bi bi-person me-2"></i>Профил
                         </a></li>
                         <li><a class="dropdown-item" href="reservations.html">
-                            <i class="bi bi-calendar-check me-2"></i>My Reservations
+                            <i class="bi bi-calendar-check me-2"></i>Моите Резервации
                         </a></li>
                         ${this.user.role === 'DRIVER' ? `
                         <li><a class="dropdown-item" href="my-rides.html">
-                            <i class="bi bi-car-front me-2"></i>My Rides
+                            <i class="bi bi-car-front me-2"></i>Моите Пътувания
                         </a></li>
                         <li><a class="dropdown-item" href="publish-ride.html">
-                            <i class="bi bi-plus-circle me-2"></i>Publish Ride
+                            <i class="bi bi-plus-circle me-2"></i>Публикувай Пътуване
                         </a></li>
                         ` : ''}
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="#" onclick="authService.logout()">
-                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                            <i class="bi bi-box-arrow-right me-2"></i>Изход
                         </a></li>
                     </ul>
                 </li>
@@ -159,10 +159,10 @@ class AuthService {
         } else {
             authNav.innerHTML = `
                 <li class="nav-item">
-                    <a class="nav-link" href="login.html">Login</a>
+                    <a class="nav-link" href="login.html">Вход</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="register.html">Register</a>
+                    <a class="nav-link" href="register.html">Регистрация</a>
                 </li>
             `;
         }
@@ -227,7 +227,7 @@ function showLoading(buttonId) {
     const button = document.getElementById(buttonId);
     if (button) {
         button.disabled = true;
-        button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Loading...';
+        button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Зареждане...';
     }
 }
 
